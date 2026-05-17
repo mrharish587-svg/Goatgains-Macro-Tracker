@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>India Diet Tracker - Goatgains G4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-bar glass">
+      <div>
+        <h1>India Diet Tracker</h1>
+        <p class="subtitle">Project: Goatgains-Macro-Tracker • by Goatgains_G4</p>
+      </div>
+      <button id="cameraButton" class="neon-btn">AI Camera</button>
+    </header>
+
+    <main id="screens">
+      <section id="vault" class="screen active">
+        <h2>Smart Food Vault</h2>
+        <div class="vault-controls glass">
+          <form id="foodForm">
+            <input type="text" id="foodName" placeholder="Food item" required>
+            <select id="foodCategory" required>
+              <option value="">Category</option>
+              <option>Non-Veg</option><option>Veg</option><option>Vegetables</option><option>Nuts & Seeds</option><option>Dairy</option>
+            </select>
+            <input type="number" id="foodProtein" placeholder="Protein/100g" min="0" step="0.1" required>
+            <input type="number" id="foodCarbs" placeholder="Carbs/100g" min="0" step="0.1" required>
+            <input type="number" id="foodFats" placeholder="Fats/100g" min="0" step="0.1" required>
+            <button type="submit" class="gold-btn">Add Food</button>
+          </form>
+          <div class="sheet-tools">
+            <input id="sheetInput" type="text" placeholder="Paste Google Sheet CSV URL">
+            <button id="importSheet" class="neon-btn">Import Sheet</button>
+          </div>
+        </div>
+
+        <div class="tab-row" id="vaultTabs"></div>
+        <div id="vaultCards" class="card-grid"></div>
+      </section>
+
+      <section id="daily" class="screen">
+        <h2>Advanced Daily Log Tracker</h2>
+        <div class="daily-grid">
+          <div class="glass timeline">
+            <h3>Timeline</h3>
+            <div id="mealTimeline"></div>
+          </div>
+          <div class="glass tracker-tools">
+            <h3>Add to Meal</h3>
+            <select id="mealSelect"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snacks</option></select>
+            <select id="mealFoodSelect"></select>
+            <label>Weight (g): <span id="weightLabel">100</span></label>
+            <input type="range" id="weightSlider" min="10" max="500" value="100">
+            <button id="addMealEntry" class="neon-btn">Log Portion</button>
+            <div class="ring-wrap">
+              <svg viewBox="0 0 120 120" class="macro-ring">
+                <circle cx="60" cy="60" r="52" class="ring-bg"></circle>
+                <circle cx="60" cy="60" r="52" class="ring-progress" id="ringProtein"></circle>
+              </svg>
+              <div class="ring-text" id="ringText">Protein 0 / 150g</div>
+            </div>
+            <div id="macroStats" class="macro-stats"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="camera" class="screen">
+        <h2>Cal-AI Inspired Vision Camera</h2>
+        <div class="glass camera-panel">
+          <input id="cameraInput" type="file" accept="image/*" capture="environment" />
+          <button id="simulateAi" class="neon-btn">Analyze Meal</button>
+          <div id="visionResult"></div>
+        </div>
+      </section>
+
+      <section id="arena" class="screen">
+        <h2>Goatgains Arena</h2>
+        <form id="postForm" class="glass post-form">
+          <input id="profileName" placeholder="Profile name" required>
+          <input id="postImage" placeholder="Image URL (high-res)" required>
+          <textarea id="postDesc" placeholder="Meal description" required></textarea>
+          <button class="gold-btn">Post to Arena</button>
+        </form>
+        <div id="leaderboard" class="glass leaderboard"></div>
+        <div id="communityFeed"></div>
+      </section>
+
+      <section id="tips" class="screen">
+        <h2>G4 Alpha Tips</h2>
+        <div id="tipsCards" class="swipe-cards"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav glass" id="nav">
+      <button data-screen="vault" class="active">Vault</button>
+      <button data-screen="daily">Daily Log</button>
+      <button data-screen="camera">AI Cam</button>
+      <button data-screen="arena">Arena</button>
+      <button data-screen="tips">G4 Tips</button>
+    </nav>
+  </div>
+<script src="app.js"></script>
+</body>
+</html>
