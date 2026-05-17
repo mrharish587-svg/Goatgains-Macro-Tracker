@@ -23,6 +23,28 @@ const tips = [
 ];
 
 function proteinScore(f){return Math.round((f.protein*4)/(f.carbs+f.fats+1)*100)}
+
+function escapeHtml(value=''){
+  return String(value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function sanitizeImageUrl(value=''){
+  const raw = String(value).trim();
+  if(!raw) return '';
+  try{
+    const parsed = new URL(raw, window.location.href);
+    if(['http:','https:'].includes(parsed.protocol)) return parsed.href;
+  }catch(_){
+    return '';
+  }
+  return '';
+}
+
 function save(){localStorage.setItem('g4_foods',JSON.stringify(foods));localStorage.setItem('g4_posts',JSON.stringify(posts));localStorage.setItem('g4_meals',JSON.stringify(mealLog));}
 
 function renderTabs(){
@@ -75,9 +97,18 @@ function addComment(i,val){posts[i].comments.push(val);save();renderFeed();}
 function vote(i,d){posts[i].votes=Math.max(1,Math.min(100,posts[i].votes+d));posts[i].points+=d>0?5:0;save();renderFeed();}
 window.addComment=addComment; window.vote=vote;
 function renderFeed(){
-  communityFeed.innerHTML=posts.map((p,i)=>`<article class="feed-card glass"><h3>${p.name}</h3><img src="${p.image}" alt="meal"><p>${p.desc}</p><p>Protein Score: ${p.votes}</p><button class="neon-btn" onclick="vote(${i},1)">Upvote</button> <button onclick="vote(${i},-1)">Downvote</button><div>${p.comments.map(c=>`<div class='comment'>💬 ${c}</div>`).join('')}</div><input id='c${i}' placeholder='Comment'><button onclick="addComment(${i},document.getElementById('c${i}').value)">Send</button></article>`).join('');
+  communityFeed.innerHTML=posts.map((p,i)=>{
+    const safeName = escapeHtml(p.name);
+    const safeImage = sanitizeImageUrl(p.image);
+    const safeDesc = escapeHtml(p.desc);
+    const safeComments = p.comments.map(c=>`<div class='comment'>💬 ${escapeHtml(c)}</div>`).join('');
+    const imageMarkup = safeImage ? `<img src="${safeImage}" alt="meal">` : '';
+
+    return `<article class="feed-card glass"><h3>${safeName}</h3>${imageMarkup}<p>${safeDesc}</p><p>Protein Score: ${p.votes}</p><button class="neon-btn" onclick="vote(${i},1)">Upvote</button> <button onclick="vote(${i},-1)">Downvote</button><div>${safeComments}</div><input id='c${i}' placeholder='Comment'><button onclick="addComment(${i},document.getElementById('c${i}').value)">Send</button></article>`;
+  }).join('');
+
   const ranks=[...posts].sort((a,b)=>b.points-a.points).slice(0,5);
-  leaderboard.innerHTML=`<h3>GOAT Eater Leaderboard</h3>${ranks.map((r,k)=>`<div class='rank'><span>#${k+1} ${r.name}</span><strong>${r.points} pts</strong></div>`).join('')}`;
+  leaderboard.innerHTML=`<h3>GOAT Eater Leaderboard</h3>${ranks.map((r,k)=>`<div class='rank'><span>#${k+1} ${escapeHtml(r.name)}</span><strong>${r.points} pts</strong></div>`).join('')}`;
 }
 
 function renderTips(){tipsCards.innerHTML=tips.map(t=>`<article class='tip-card glass'><p><strong>Title:</strong> ${t[0]}</p><p><strong>Category:</strong> ${t[1]}</p><p><strong>Tip Description:</strong> ${t[2]}</p></article>`).join('');}
